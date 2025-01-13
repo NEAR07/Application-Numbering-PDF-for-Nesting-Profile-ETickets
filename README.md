@@ -47,6 +47,6 @@ pip install pyinstaller
 ```
 - Jalankan perintah berikut untuk membuat executable:
 ```console
-python -m PyInstaller --onefile --windowed --add-data pdf_numbering_app.py
+python -m PyInstaller --onefile --windowed --add-data "C:\\Windows\\Fonts\\verdana.ttf;." NumberingPDF_Eticket_NestProf.py
 ```
 Setelah proses selesai, Maka akan menemukan file executable di dalam folder dist.
