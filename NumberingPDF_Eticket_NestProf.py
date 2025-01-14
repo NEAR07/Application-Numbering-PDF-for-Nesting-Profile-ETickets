@@ -188,40 +188,48 @@ class PDFNumberingApp(QMainWindow):
         # Set alignment to center
         self.pdf_view.setAlignment(Qt.AlignCenter)
 
-
     def next_page(self):
         """Go to the next page."""
-        self.save_current_page_data()
+        self.save_current_page_data()  # Save current page data before switching
         if self.current_page < self.total_pages - 1:
             self.current_page += 1
-            self.update_page_inputs()
+            self.update_page_inputs()  # Load data for the next page
             self.display_pdf_page(self.current_page)
 
     def back_page(self):
         """Go to the previous page."""
-        self.save_current_page_data()
+        self.save_current_page_data()  # Save current page data before switching
         if self.current_page > 0:
             self.current_page -= 1
-            self.update_page_inputs()
+            self.update_page_inputs()  # Load data for the previous page
             self.display_pdf_page(self.current_page)
 
     def save_current_page_data(self):
         """Save block and sheet input for the current page."""
         block_number = self.block_input.text()
         sheet_number = self.sheet_input.text()
+        # Save the data into the dictionary
         self.page_data[self.current_page] = {"block": block_number, "sheet": sheet_number}
 
     def update_page_inputs(self):
-        """Update input fields based on saved data."""
+        """Update input fields based on saved data or use previous page's data."""
         if self.current_page in self.page_data:
+            # If data exists for this page, load it
             self.block_input.setText(self.page_data[self.current_page].get("block", ""))
             self.sheet_input.setText(self.page_data[self.current_page].get("sheet", ""))
         else:
-            self.block_input.clear()
-            self.sheet_input.clear()
+            # If no data exists for this page, use the previous page's data
+            if self.current_page > 0 and (self.current_page - 1) in self.page_data:
+                self.block_input.setText(self.page_data[self.current_page - 1].get("block", ""))
+                self.sheet_input.setText(self.page_data[self.current_page - 1].get("sheet", ""))
+            else:
+                # If there's no previous data, clear the inputs
+                self.block_input.clear()
+                self.sheet_input.clear()
 
+        # Update the label and button states
         self.label_info.setText(f"Editing page {self.current_page + 1} of {self.total_pages}")
-        self.next_button.setEnabled(self.current_page < self.total_pages -1)
+        self.next_button.setEnabled(self.current_page < self.total_pages - 1)
         self.back_button.setEnabled(self.current_page > 0)
 
     def get_text_position(self):
